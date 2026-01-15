@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { BlogList, type BlogPost } from "@/components/BlogList";
 import { TagFilter } from "@/components/TagFilter";
-import { Footer } from "@/components/Footer";
 
 interface HomeClientProps {
   posts: BlogPost[];
@@ -31,7 +30,6 @@ export function HomeClient({ posts, tags }: HomeClientProps) {
         onTagSelect={setSelectedTag}
       />
       <BlogList posts={filteredPosts} onTagClick={handleTagClick} />
-      <Footer />
     </>
   );
 }

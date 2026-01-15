@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://blog.shivaraj110.com"),
@@ -58,6 +59,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-zinc-950 text-zinc-100 font-sans antialiased">
         <main className="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
           {children}
+          <Footer />
         </main>
       </body>
     </html>
