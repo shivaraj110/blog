@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Shivaraj&apos;s Blog</title>
+    <link>https://blog.shivaraj110.com</link>
+    <description>Thoughts on Linux, web development, and tech adventures</description>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 15 Jan 2026 09:50:25 GMT</lastBuildDate>
+    <atom:link href="https://blog.shivaraj110.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <managingEditor> (Shivaraj)</managingEditor>
+    <item>
+      <title>I Broke My Kernel: A Tale of Impatience</title>
+      <link>https://blog.shivaraj110.com/post/i-broke-my-kernel</link>
+      <guid isPermaLink="true">https://blog.shivaraj110.com/post/i-broke-my-kernel</guid>
+      <description>Let me tell you about the time I decided to reboot my machine while it was updating packages. Spoiler: it didn&apos;t end well.
+
+ The Mistake
+
+It was late. I was tired. My system was running a routine package update, and I thought, &quot;How long can this possibly take?&quot; Famous last words.
+
+I hit reboot. The ...</description>
+      <pubDate>Thu, 15 Jan 2026 00:00:00 GMT</pubDate>
+      <category>Linux</category>
+      <category>Kernel</category>
+      <category>Arch</category>
+    </item>
+    <item>
+      <title>Hyprland Broke My Configs on Demo Day</title>
+      <link>https://blog.shivaraj110.com/post/hyprland-broke-my-configs-on-demo-day</link>
+      <guid isPermaLink="true">https://blog.shivaraj110.com/post/hyprland-broke-my-configs-on-demo-day</guid>
+      <description>Murphy&apos;s Law hit different when you&apos;re about to present your final year project.
+
+ The Setup
+
+It&apos;s 7 AM. Demo at 10. I wake up, brew some coffee, and do what any responsible Arch user does before an important presentation - I run . 
+
+Yes. I updated my system three hours before my final year project ...</description>
+      <pubDate>Wed, 14 Jan 2026 00:00:00 GMT</pubDate>
+      <category>Linux</category>
+      <category>Hyprland</category>
+      <category>Wayland</category>
+      <category>Arch</category>
+    </item>
+    <item>
+      <title>Getting Started with Bun: A Fast JavaScript Runtime</title>
+      <link>https://blog.shivaraj110.com/post/getting-started-with-bun</link>
+      <guid isPermaLink="true">https://blog.shivaraj110.com/post/getting-started-with-bun</guid>
+      <description>Bun is an all-in-one JavaScript runtime and toolkit designed for speed. It includes a bundler, test runner, and Node.js-compatible package manager.
+
+ Why Bun?
+
+Bun was built from scratch with performance in mind. It&apos;s written in Zig and uses JavaScriptCore instead of V8, which gives it a significant...</description>
+      <pubDate>Sat, 10 Jan 2026 00:00:00 GMT</pubDate>
+      <category>JavaScript</category>
+      <category>Bun</category>
+      <category>Runtime</category>
+    </item>
+    <item>
+      <title>Building Beautiful CLI Tools with TypeScript and Ink</title>
+      <link>https://blog.shivaraj110.com/post/building-cli-tools-with-typescript</link>
+      <guid isPermaLink="true">https://blog.shivaraj110.com/post/building-cli-tools-with-typescript</guid>
+      <description>Command-line interfaces don&apos;t have to be boring. With Ink, you can build beautiful, interactive CLIs using React components.
+
+ What is Ink?
+
+Ink is a React renderer for the terminal. It lets you build CLI apps using components, just like you would build a web app.
+
+ Why Use Ink?
+
+- Familiar React co...</description>
+      <pubDate>Mon, 05 Jan 2026 00:00:00 GMT</pubDate>
+      <category>TypeScript</category>
+      <category>CLI</category>
+      <category>Ink</category>
+      <category>React</category>
+    </item>
+    <item>
+      <title>Modern CSS Architecture with Tailwind CSS 4.0</title>
+      <link>https://blog.shivaraj110.com/post/modern-css-with-tailwind</link>
+      <guid isPermaLink="true">https://blog.shivaraj110.com/post/modern-css-with-tailwind</guid>
+      <description>Tailwind CSS 4.0 brings significant improvements to the utility-first CSS framework we know and love.
+
+ What&apos;s New in v4?
+
+The latest version includes a completely rewritten engine that&apos;s significantly faster and more capable.
+
+ Key Improvements
+
+- New engine - Up to 10x faster builds
+- CSS-first co...</description>
+      <pubDate>Sun, 28 Dec 2025 00:00:00 GMT</pubDate>
+      <category>CSS</category>
+      <category>Tailwind</category>
+      <category>Frontend</category>
+    </item>
+  </channel>
+</rss>

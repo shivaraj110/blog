@@ -1,0 +1,49 @@
+---
+title: "Building Beautiful CLI Tools with TypeScript and Ink"
+date: "2026-01-05"
+tags: ["TypeScript", "CLI", "Ink", "React"]
+slug: "building-cli-tools-with-typescript"
+---
+
+Command-line interfaces don't have to be boring. With Ink, you can build beautiful, interactive CLIs using React components.
+
+## What is Ink?
+
+Ink is a React renderer for the terminal. It lets you build CLI apps using components, just like you would build a web app.
+
+### Why Use Ink?
+
+- Familiar React component model
+- Built-in hooks for input handling
+- Flexbox layout support
+- TypeScript support out of the box
+
+## Creating Your First Ink App
+
+Start by creating a new project:
+
+```bash
+mkdir my-cli && cd my-cli
+bun init
+bun add ink react
+```
+
+Then create your component:
+
+```typescript
+import { render, Text, Box } from 'ink';
+
+function App() {
+  return (
+    <Box flexDirection="column">
+      <Text color="green">Hello, CLI!</Text>
+    </Box>
+  );
+}
+
+render(<App />);
+```
+
+## Conclusion
+
+Ink makes it easy to create professional CLI tools. The React paradigm translates surprisingly well to terminal interfaces.

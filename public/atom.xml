@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Shivaraj&apos;s Blog</title>
+  <link href="https://blog.shivaraj110.com"/>
+  <link href="https://blog.shivaraj110.com/atom.xml" rel="self"/>
+  <updated>2026-01-15T09:50:25.773Z</updated>
+  <id>https://blog.shivaraj110.com/</id>
+  <author>
+    <name>Shivaraj</name>
+  </author>
+  <entry>
+    <title>I Broke My Kernel: A Tale of Impatience</title>
+    <link href="https://blog.shivaraj110.com/post/i-broke-my-kernel"/>
+    <id>https://blog.shivaraj110.com/post/i-broke-my-kernel</id>
+    <updated>2026-01-15T00:00:00.000Z</updated>
+    <summary>Let me tell you about the time I decided to reboot my machine while it was updating packages. Spoiler: it didn&apos;t end well.
+
+ The Mistake
+
+It was late. I was tired. My system was running a routine package update, and I thought, &quot;How long can this possibly take?&quot; Famous last words.
+
+I hit reboot. The ...</summary>
+    <category term="Linux"/>
+    <category term="Kernel"/>
+    <category term="Arch"/>
+  </entry>
+  <entry>
+    <title>Hyprland Broke My Configs on Demo Day</title>
+    <link href="https://blog.shivaraj110.com/post/hyprland-broke-my-configs-on-demo-day"/>
+    <id>https://blog.shivaraj110.com/post/hyprland-broke-my-configs-on-demo-day</id>
+    <updated>2026-01-14T00:00:00.000Z</updated>
+    <summary>Murphy&apos;s Law hit different when you&apos;re about to present your final year project.
+
+ The Setup
+
+It&apos;s 7 AM. Demo at 10. I wake up, brew some coffee, and do what any responsible Arch user does before an important presentation - I run . 
+
+Yes. I updated my system three hours before my final year project ...</summary>
+    <category term="Linux"/>
+    <category term="Hyprland"/>
+    <category term="Wayland"/>
+    <category term="Arch"/>
+  </entry>
+  <entry>
+    <title>Getting Started with Bun: A Fast JavaScript Runtime</title>
+    <link href="https://blog.shivaraj110.com/post/getting-started-with-bun"/>
+    <id>https://blog.shivaraj110.com/post/getting-started-with-bun</id>
+    <updated>2026-01-10T00:00:00.000Z</updated>
+    <summary>Bun is an all-in-one JavaScript runtime and toolkit designed for speed. It includes a bundler, test runner, and Node.js-compatible package manager.
+
+ Why Bun?
+
+Bun was built from scratch with performance in mind. It&apos;s written in Zig and uses JavaScriptCore instead of V8, which gives it a significant...</summary>
+    <category term="JavaScript"/>
+    <category term="Bun"/>
+    <category term="Runtime"/>
+  </entry>
+  <entry>
+    <title>Building Beautiful CLI Tools with TypeScript and Ink</title>
+    <link href="https://blog.shivaraj110.com/post/building-cli-tools-with-typescript"/>
+    <id>https://blog.shivaraj110.com/post/building-cli-tools-with-typescript</id>
+    <updated>2026-01-05T00:00:00.000Z</updated>
+    <summary>Command-line interfaces don&apos;t have to be boring. With Ink, you can build beautiful, interactive CLIs using React components.
+
+ What is Ink?
+
+Ink is a React renderer for the terminal. It lets you build CLI apps using components, just like you would build a web app.
+
+ Why Use Ink?
+
+- Familiar React co...</summary>
+    <category term="TypeScript"/>
+    <category term="CLI"/>
+    <category term="Ink"/>
+    <category term="React"/>
+  </entry>
+  <entry>
+    <title>Modern CSS Architecture with Tailwind CSS 4.0</title>
+    <link href="https://blog.shivaraj110.com/post/modern-css-with-tailwind"/>
+    <id>https://blog.shivaraj110.com/post/modern-css-with-tailwind</id>
+    <updated>2025-12-28T00:00:00.000Z</updated>
+    <summary>Tailwind CSS 4.0 brings significant improvements to the utility-first CSS framework we know and love.
+
+ What&apos;s New in v4?
+
+The latest version includes a completely rewritten engine that&apos;s significantly faster and more capable.
+
+ Key Improvements
+
+- New engine - Up to 10x faster builds
+- CSS-first co...</summary>
+    <category term="CSS"/>
+    <category term="Tailwind"/>
+    <category term="Frontend"/>
+  </entry>
+</feed>

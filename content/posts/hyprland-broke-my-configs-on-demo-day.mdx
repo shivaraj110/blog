@@ -1,0 +1,176 @@
+---
+title: "Hyprland Broke My Configs on Demo Day"
+date: "2026-01-14"
+tags: ["Linux", "Hyprland", "Wayland", "Arch"]
+slug: "hyprland-broke-my-configs-on-demo-day"
+---
+
+Murphy's Law hit different when you're about to present your final year project.
+
+## The Setup
+
+It's 7 AM. Demo at 10. I wake up, brew some coffee, and do what any responsible Arch user does before an important presentation - I run `yay -Syu`. 
+
+Yes. I updated my system three hours before my final year project demo. In my defense, I'd been putting it off for a week and there were 47 packages waiting. What could possibly go wrong?
+
+## Everything. Everything Could Go Wrong.
+
+Hyprland 0.53 dropped overnight. Cool. New features. Nice animations. One small problem - they decided to **completely overhaul the windowrule syntax**.
+
+I boot into my desktop and I'm greeted by... chaos. My carefully crafted rice? Gone. My window rules? Completely broken. Every single one of them.
+
+```bash
+$ hyprctl reload
+Config error at line 45: invalid windowrule syntax
+Config error at line 46: invalid windowrule syntax  
+Config error at line 47: invalid windowrule syntax
+# ... 30 more errors
+```
+
+They rewrote the entire windowrule system. The syntax I'd been using for months? Deprecated. Gone. Invalid.
+
+## The Old vs New Nightmare
+
+Here's what my config looked like before:
+
+```bash
+# Old syntax (pre-0.53)
+windowrule = float, ^(pavucontrol)$
+windowrule = float, ^(nm-connection-editor)$
+windowrule = float, title:^(Open File)$
+windowrule = size 800 600, ^(pavucontrol)$
+windowrule = center, ^(pavucontrol)$
+windowrule = opacity 0.95 0.95, ^(Alacritty)$
+windowrulev2 = float, class:^(firefox)$, title:^(Picture-in-Picture)$
+windowrulev2 = pin, class:^(firefox)$, title:^(Picture-in-Picture)$
+windowrulev2 = size 640 360, class:^(firefox)$, title:^(Picture-in-Picture)$
+```
+
+And here's what 0.53 expects:
+
+```bash
+# New syntax (0.53+)
+windowrule = class:^(pavucontrol)$, float
+windowrule = class:^(nm-connection-editor)$, float
+windowrule = title:^(Open File)$, float
+windowrule = class:^(pavucontrol)$, size 800 600
+windowrule = class:^(pavucontrol)$, center
+windowrule = class:^(Alacritty)$, opacity 0.95 0.95
+windowrule = class:^(firefox)$ title:^(Picture-in-Picture)$, float
+windowrule = class:^(firefox)$ title:^(Picture-in-Picture)$, pin
+windowrule = class:^(firefox)$ title:^(Picture-in-Picture)$, size 640 360
+```
+
+They flipped the entire syntax! The matcher now comes **before** the rule, and `windowrulev2` is gone entirely. Everything is just `windowrule` now with the new format.
+
+## The Panic
+
+Two hours until demo. My desktop is a mess. Windows spawning in random positions. My terminal isn't transparent. My PiP window isn't pinned. Firefox popups aren't floating.
+
+The rational thing would be to boot into a backup session. KDE is right there. GNOME exists. But no - I've been showing off Hyprland to everyone for months. "Look how smooth it is!" "Check out these animations!" "This is the future of Linux desktops!"
+
+I couldn't present on a boring normie DE. My pride wouldn't allow it.
+
+## The Speedrun
+
+What followed was the most stressful hour of config editing I've ever experienced.
+
+First, I pulled up the wiki:
+
+```bash
+$ firefox https://wiki.hyprland.org/Configuring/Window-Rules/
+```
+
+Then I found a lifesaver - someone made an automatic converter:
+
+```bash
+$ firefox https://forum.hypr.land/t/0-53-window-layerrule-converter/1243
+```
+
+Thank you @ItsOhen, you absolute legend. The in-browser converter handled most of my rules automatically.
+
+But of course, some rules needed manual fixing. The converter couldn't handle everything.
+
+## 45 Minutes Left
+
+My fingers are flying. The Hyprland Discord is chaos - turns out I'm not the only one who updated at the worst possible time.
+
+The other breaking change hit me too:
+
+```bash
+# Old config
+misc {
+    new_window_takes_over_fullscreen = 2
+}
+
+# New config
+misc {
+    on_focus_under_fullscreen = 2
+}
+```
+
+`new_window_takes_over_fullscreen` and `master:inherit_fullscreen` got merged into `on_focus_under_fullscreen`. Another thing to fix.
+
+```bash
+$ hyprctl reload
+# No errors
+
+$ hyprctl clients
+# Windows actually following rules again
+```
+
+My PiP is pinned. Terminals are transparent. Pavucontrol floats and centers. We're back.
+
+## 15 Minutes Left
+
+Config is working. Quick test - everything launches correctly. Window rules apply. Animations smooth.
+
+Quick shower. Throw on a shirt that doesn't have coffee stains. Laptop in bag. Sprint to the demo room.
+
+## The Demo
+
+I present. Everything works. The panel clicks, the smooth animations play, my project does its thing. The examiner is impressed.
+
+"Nice desktop environment," he says. "What is that, some kind of custom Linux setup?"
+
+"Hyprland," I say, trying not to think about the heart attack I had an hour ago. "It's a Wayland compositor. Very stable."
+
+I lie with a straight face. It's a survival skill.
+
+## Lessons Learned (That I'll Probably Ignore)
+
+1. **Never update before important events.** Put a reminder in your calendar. Tape a note to your monitor. Tattoo it on your forehead.
+
+2. **Keep a backup DE installed.** KDE takes like 2 seconds to boot into. Your pride is not worth the stress.
+
+3. **Pin critical packages.** You can tell pacman to ignore certain packages during updates:
+   ```bash
+   # /etc/pacman.conf
+   IgnorePkg = hyprland hyprland-git
+   ```
+
+4. **Read the release notes BEFORE updating.** Revolutionary concept, I know. Especially check for "Breaking Changes" sections.
+
+5. **Have a minimal fallback config.** Something that just works, even if it's ugly.
+
+6. **Bookmark the migration tools.** The community usually builds converters for major syntax changes. Use them.
+
+## Current Status
+
+It's now midnight. I've fully migrated my config. The new windowrule syntax is actually cleaner once you get used to it - having the matcher first makes more logical sense.
+
+But I'm not updating again until after graduation. I'm adding Hyprland to my IgnorePkg list. I'll live with the old version. Stability is a feature.
+
+```bash
+$ hyprctl version
+Hyprland 0.53.0
+
+$ cat /etc/pacman.conf | grep Ignore
+IgnorePkg = hyprland
+```
+
+To the Hyprland devs: I love your project. The new windowrule system is cleaner and more powerful. But maybe next time, a deprecation period? A gentle nudge before the rug pull? 
+
+At least you provided a converter tool link in the release notes. That saved my demo.
+
+Now if you'll excuse me, I need to go touch grass and recover from the emotional damage.

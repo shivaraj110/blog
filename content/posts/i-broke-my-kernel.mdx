@@ -1,0 +1,88 @@
+---
+title: "I Broke My Kernel: A Tale of Impatience"
+date: "2026-01-15"
+tags: ["Linux", "Kernel", "Arch"]
+slug: "i-broke-my-kernel"
+---
+
+Let me tell you about the time I decided to reboot my machine while it was updating packages. Spoiler: it didn't end well.
+
+## The Mistake
+
+It was late. I was tired. My system was running a routine package update, and I thought, "How long can this possibly take?" Famous last words.
+
+I hit reboot. The screen went black. And then... emergency mode. That beautiful red text greeting me like an old friend who's disappointed in my life choices.
+
+## What Actually Happened
+
+When you update packages on Linux, especially on a rolling release like Arch, the kernel and its modules get updated together. Rebooting mid-update means you end up with a partially updated kernel - some files are new, some are old, and none of them want to work together.
+
+The system couldn't mount properly. Systemd threw its hands up. I was staring at a blinking cursor in emergency mode, questioning every decision that led me here.
+
+## The Recovery
+
+First, I tried the obvious - booting into the fallback initramfs. No luck. The kernel was too corrupted for that.
+
+Next step: boot from a live USB. I always keep one around for exactly these moments (read: my frequent mistakes).
+
+After chrooting into my system:
+
+```bash
+mount /dev/nvme0n1p2 /mnt
+mount /dev/nvme0n1p1 /mnt/boot
+arch-chroot /mnt
+```
+
+I checked what kernels were available:
+
+```bash
+pacman -Q | grep linux
+```
+
+The main kernel was in a broken state. Time for the LTS kernel - the boring, stable, "I won't break on you" option that I should've been using all along.
+
+```bash
+pacman -S linux-lts linux-lts-headers
+```
+
+Regenerated the initramfs:
+
+```bash
+mkinitcpio -P
+```
+
+Updated GRUB to recognize the new kernel:
+
+```bash
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+Rebooted. Selected linux-lts from the GRUB menu. And finally - my desktop. Beautiful, functional, boring desktop.
+
+## Lessons Learned
+
+Here's what I took away from this adventure:
+
+- **Never reboot during updates.** Just don't. Go make coffee. Touch grass. Do anything except hit that reboot button.
+- **Keep a live USB handy.** It's saved me more times than I'd like to admit.
+- **The LTS kernel exists for a reason.** It's not exciting, but it's stable. For a daily driver, that matters.
+- **Timeshift or snapper snapshots.** I didn't have them configured. I do now.
+
+## Current Setup
+
+I'm now running the LTS kernel as my default, with the mainline kernel as a fallback option in GRUB. The irony isn't lost on me - the "fallback" is now the bleeding edge one.
+
+```bash
+$ uname -r
+6.12.10-lts
+```
+
+Is it as exciting as running the latest kernel? No. Does my system boot every single time? Yes. I'll take that trade.
+
+## Final Thoughts
+
+Breaking your system is a rite of passage for any Linux user. It's how you learn. It's how you understand what's actually happening under the hood instead of just accepting that things work.
+
+That said, maybe don't break it at 2 AM when you have work the next morning. Learn from my mistakes.
+
+Keep calm and always have a backup kernel.
