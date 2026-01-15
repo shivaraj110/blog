@@ -12,6 +12,9 @@ interface PostHeaderProps {
 }
 
 export function PostHeader({ title, date, readTime, tags }: PostHeaderProps) {
+  const [mounted, setMounted] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -19,24 +22,30 @@ export function PostHeader({ title, date, readTime, tags }: PostHeaderProps) {
     restDelta: 0.001,
   });
 
-  const [isScrolled, setIsScrolled] = useState(false);
-
   useEffect(() => {
+    setMounted(true);
+    
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 150);
     };
 
+    // Set initial scroll state
+    handleScroll();
+    
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <>
-      {/* Progress bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 origin-left z-50"
-        style={{ scaleX }}
-      />
+      {/* Progress bar - only show after mount to prevent hydration animation */}
+      {mounted && (
+        <motion.div
+          className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 origin-left z-50"
+          style={{ scaleX }}
+          initial={false}
+        />
+      )}
 
       {/* Sticky navbar header - appears on scroll */}
       <AnimatePresence>
