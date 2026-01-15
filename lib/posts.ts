@@ -12,6 +12,7 @@ export interface PostMeta {
   tags: string[];
   excerpt: string;
   readTime: string;
+  wordCount: number;
 }
 
 export interface PostWithContent extends PostMeta {
@@ -38,6 +39,9 @@ export function getAllPosts(): PostMeta[] {
         ? excerptMatch[1].replace(/^#+\s*/, "").trim().slice(0, 160)
         : "";
 
+      // Calculate word count
+      const wordCount = content.trim().split(/\s+/).filter(w => w.length > 0).length;
+
       return {
         slug: data.slug || slug,
         title: data.title || slug,
@@ -45,6 +49,7 @@ export function getAllPosts(): PostMeta[] {
         tags: data.tags || [],
         excerpt: data.excerpt || excerpt,
         readTime: calculateReadTime(content),
+        wordCount,
       };
     });
 
