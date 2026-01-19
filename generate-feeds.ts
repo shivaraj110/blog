@@ -80,12 +80,31 @@ async function generateFeeds() {
   const atom = generateAtomFeed(posts, config);
   const sitemap = generateSitemap(posts);
 
-  // Write to public directory
+  // Write main feeds to public directory
   await Bun.write("./public/rss.xml", rss);
   await Bun.write("./public/atom.xml", atom);
   await Bun.write("./public/sitemap.xml", sitemap);
 
+  // Generate individual RSS feeds for each post
+  const { mkdir } = await import("node:fs/promises");
+
+  for (const post of posts) {
+    const postDir = join("./public/post", post.slug);
+    await mkdir(postDir, { recursive: true });
+
+    // Generate RSS feed for this specific post
+    const postRss = generateRSSFeed([post], {
+      ...config,
+      title: `${post.title} - Shivaraj's Blog`,
+      description: post.content.slice(0, 300).replace(/[#*_~`]/g, "").trim() + "...",
+    });
+
+    await Bun.write(join(postDir, "rss.xml"), postRss);
+  }
+
   console.log(`Generated RSS, Atom, and Sitemap (${posts.length} posts)`);
+  console.log(`Generated ${posts.length} individual post RSS feeds`);
 }
 
 generateFeeds();
+

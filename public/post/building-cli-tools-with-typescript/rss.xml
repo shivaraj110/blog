@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Building Beautiful CLI Tools with TypeScript and Ink - Shivaraj&apos;s Blog</title>
+    <link>https://blog.shivaraj110.com</link>
+    <description>Command-line interfaces don&apos;t have to be boring. With Ink, you can build beautiful, interactive CLIs using React components.
+
+ What is Ink?
+
+Ink is a React renderer for the terminal. It lets you build CLI apps using components, just like you would build a web app.
+
+ Why Use Ink?
+
+- Familiar Re...</description>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 19 Jan 2026 15:33:37 GMT</lastBuildDate>
+    <atom:link href="https://blog.shivaraj110.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <managingEditor> (Shivaraj)</managingEditor>
+    <item>
+      <title>Building Beautiful CLI Tools with TypeScript and Ink</title>
+      <link>https://blog.shivaraj110.com/post/building-cli-tools-with-typescript</link>
+      <guid isPermaLink="true">https://blog.shivaraj110.com/post/building-cli-tools-with-typescript</guid>
+      <description>Command-line interfaces don&apos;t have to be boring. With Ink, you can build beautiful, interactive CLIs using React components.
+
+ What is Ink?
+
+Ink is a React renderer for the terminal. It lets you build CLI apps using components, just like you would build a web app.
+
+ Why Use Ink?
+
+- Familiar React co...</description>
+      <content:encoded><![CDATA[
+Command-line interfaces don't have to be boring. With Ink, you can build beautiful, interactive CLIs using React components.
+
+## What is Ink?
+
+Ink is a React renderer for the terminal. It lets you build CLI apps using components, just like you would build a web app.
+
+### Why Use Ink?
+
+- Familiar React component model
+- Built-in hooks for input handling
+- Flexbox layout support
+- TypeScript support out of the box
+
+## Creating Your First Ink App
+
+Start by creating a new project:
+
+```bash
+mkdir my-cli && cd my-cli
+bun init
+bun add ink react
+```
+
+Then create your component:
+
+```typescript
+import { render, Text, Box } from 'ink';
+
+function App() {
+  return (
+    <Box flexDirection="column">
+      <Text color="green">Hello, CLI!</Text>
+    </Box>
+  );
+}
+
+render(<App />);
+```
+
+## Conclusion
+
+Ink makes it easy to create professional CLI tools. The React paradigm translates surprisingly well to terminal interfaces.
+]]></content:encoded>
+      <pubDate>Mon, 05 Jan 2026 00:00:00 GMT</pubDate>
+      <category>TypeScript</category>
+      <category>CLI</category>
+      <category>Ink</category>
+      <category>React</category>
+    </item>
+  </channel>
+</rss>

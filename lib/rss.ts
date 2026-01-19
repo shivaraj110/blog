@@ -58,6 +58,7 @@ export function generateRSSFeed(
       <link>${link}</link>
       <guid isPermaLink="true">${link}</guid>
       <description>${escapeXml(description)}</description>
+      <content:encoded><![CDATA[${post.content}]]></content:encoded>
       <pubDate>${new Date(post.date).toUTCString()}</pubDate>
       ${post.tags.map((tag) => `<category>${escapeXml(tag)}</category>`).join("\n      ")}
     </item>`;
@@ -65,7 +66,7 @@ export function generateRSSFeed(
     .join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>${escapeXml(cfg.title)}</title>
     <link>${cfg.siteUrl}</link>

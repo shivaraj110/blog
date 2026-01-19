@@ -79,6 +79,10 @@ export async function generateMetadata({
     },
     alternates: {
       canonical: postUrl,
+      types: {
+        // Per-post RSS feed
+        "application/rss+xml": `${postUrl}/rss.xml`,
+      },
     },
     robots: {
       index: true,

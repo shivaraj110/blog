@@ -1,8 +1,16 @@
 "use client";
 
 import { motion } from "motion/react";
+import { usePathname } from "next/navigation";
 
 export function Footer() {
+  const pathname = usePathname();
+
+  // Determine RSS URL based on current path
+  const rssUrl = pathname.startsWith("/post/")
+    ? `${pathname}/rss.xml`
+    : "/rss.xml";
+
   return (
     <motion.footer
       initial={{ opacity: 0 }}
@@ -59,7 +67,7 @@ export function Footer() {
           </svg>
         </a>
         <a
-          href="/rss.xml"
+          href={rssUrl}
           className="p-2 text-zinc-500 hover:text-zinc-300 transition-colors duration-200"
           aria-label="RSS Feed"
         >

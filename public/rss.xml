@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Shivaraj&apos;s Blog</title>
     <link>https://blog.shivaraj110.com</link>
     <description>Thoughts on Linux, web development, and tech adventures</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 15 Jan 2026 14:20:10 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 19 Jan 2026 15:33:37 GMT</lastBuildDate>
     <atom:link href="https://blog.shivaraj110.com/rss.xml" rel="self" type="application/rss+xml"/>
     <managingEditor> (Shivaraj)</managingEditor>
     <item>
@@ -19,6 +19,89 @@
 It was late. I was tired. My system was running a routine package update, and I thought, &quot;How long can this possibly take?&quot; Famous last words.
 
 I hit reboot. The ...</description>
+      <content:encoded><![CDATA[
+Let me tell you about the time I decided to reboot my machine while it was updating packages. Spoiler: it didn't end well.
+
+## The Mistake
+
+It was late. I was tired. My system was running a routine package update, and I thought, "How long can this possibly take?" Famous last words.
+
+I hit reboot. The screen went black. And then... emergency mode. That beautiful red text greeting me like an old friend who's disappointed in my life choices.
+
+## What Actually Happened
+
+When you update packages on Linux, especially on a rolling release like Arch, the kernel and its modules get updated together. Rebooting mid-update means you end up with a partially updated kernel - some files are new, some are old, and none of them want to work together.
+
+The system couldn't mount properly. Systemd threw its hands up. I was staring at a blinking cursor in emergency mode, questioning every decision that led me here.
+
+## The Recovery
+
+First, I tried the obvious - booting into the fallback initramfs. No luck. The kernel was too corrupted for that.
+
+Next step: boot from a live USB. I always keep one around for exactly these moments (read: my frequent mistakes).
+
+After chrooting into my system:
+
+```bash
+mount /dev/nvme0n1p2 /mnt
+mount /dev/nvme0n1p1 /mnt/boot
+arch-chroot /mnt
+```
+
+I checked what kernels were available:
+
+```bash
+pacman -Q | grep linux
+```
+
+The main kernel was in a broken state. Time for the LTS kernel - the boring, stable, "I won't break on you" option that I should've been using all along.
+
+```bash
+pacman -S linux-lts linux-lts-headers
+```
+
+Regenerated the initramfs:
+
+```bash
+mkinitcpio -P
+```
+
+Updated GRUB to recognize the new kernel:
+
+```bash
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+Rebooted. Selected linux-lts from the GRUB menu. And finally - my desktop. Beautiful, functional, boring desktop.
+
+## Lessons Learned
+
+Here's what I took away from this adventure:
+
+- **Never reboot during updates.** Just don't. Go make coffee. Touch grass. Do anything except hit that reboot button.
+- **Keep a live USB handy.** It's saved me more times than I'd like to admit.
+- **The LTS kernel exists for a reason.** It's not exciting, but it's stable. For a daily driver, that matters.
+- **Timeshift or snapper snapshots.** I didn't have them configured. I do now.
+
+## Current Setup
+
+I'm now running the LTS kernel as my default, with the mainline kernel as a fallback option in GRUB. The irony isn't lost on me - the "fallback" is now the bleeding edge one.
+
+```bash
+$ uname -r
+6.12.10-lts
+```
+
+Is it as exciting as running the latest kernel? No. Does my system boot every single time? Yes. I'll take that trade.
+
+## Final Thoughts
+
+Breaking your system is a rite of passage for any Linux user. It's how you learn. It's how you understand what's actually happening under the hood instead of just accepting that things work.
+
+That said, maybe don't break it at 2 AM when you have work the next morning. Learn from my mistakes.
+
+Keep calm and always have a backup kernel.
+]]></content:encoded>
       <pubDate>Thu, 15 Jan 2026 00:00:00 GMT</pubDate>
       <category>Linux</category>
       <category>Kernel</category>
@@ -35,6 +118,177 @@ I hit reboot. The ...</description>
 It&apos;s 7 AM. Demo at 10. I wake up, brew some coffee, and do what any responsible Arch user does before an important presentation - I run . 
 
 Yes. I updated my system three hours before my final year project ...</description>
+      <content:encoded><![CDATA[
+Murphy's Law hit different when you're about to present your final year project.
+
+## The Setup
+
+It's 7 AM. Demo at 10. I wake up, brew some coffee, and do what any responsible Arch user does before an important presentation - I run `yay -Syu`. 
+
+Yes. I updated my system three hours before my final year project demo. In my defense, I'd been putting it off for a week and there were 47 packages waiting. What could possibly go wrong?
+
+## Everything. Everything Could Go Wrong.
+
+Hyprland 0.53 dropped overnight. Cool. New features. Nice animations. One small problem - they decided to **completely overhaul the windowrule syntax**.
+
+I boot into my desktop and I'm greeted by... chaos. My carefully crafted rice? Gone. My window rules? Completely broken. Every single one of them.
+
+```bash
+$ hyprctl reload
+Config error at line 45: invalid windowrule syntax
+Config error at line 46: invalid windowrule syntax  
+Config error at line 47: invalid windowrule syntax
+# ... 30 more errors
+```
+
+They rewrote the entire windowrule system. The syntax I'd been using for months? Deprecated. Gone. Invalid.
+
+## The Old vs New Nightmare
+
+Here's what my config looked like before:
+
+```bash
+# Old syntax (pre-0.53)
+windowrule = float, ^(pavucontrol)$
+windowrule = float, ^(nm-connection-editor)$
+windowrule = float, title:^(Open File)$
+windowrule = size 800 600, ^(pavucontrol)$
+windowrule = center, ^(pavucontrol)$
+windowrule = opacity 0.95 0.95, ^(Alacritty)$
+windowrulev2 = float, class:^(firefox)$, title:^(Picture-in-Picture)$
+windowrulev2 = pin, class:^(firefox)$, title:^(Picture-in-Picture)$
+windowrulev2 = size 640 360, class:^(firefox)$, title:^(Picture-in-Picture)$
+```
+
+And here's what 0.53 expects:
+
+```bash
+# New syntax (0.53+)
+windowrule = class:^(pavucontrol)$, float
+windowrule = class:^(nm-connection-editor)$, float
+windowrule = title:^(Open File)$, float
+windowrule = class:^(pavucontrol)$, size 800 600
+windowrule = class:^(pavucontrol)$, center
+windowrule = class:^(Alacritty)$, opacity 0.95 0.95
+windowrule = class:^(firefox)$ title:^(Picture-in-Picture)$, float
+windowrule = class:^(firefox)$ title:^(Picture-in-Picture)$, pin
+windowrule = class:^(firefox)$ title:^(Picture-in-Picture)$, size 640 360
+```
+
+They flipped the entire syntax! The matcher now comes **before** the rule, and `windowrulev2` is gone entirely. Everything is just `windowrule` now with the new format.
+
+## The Panic
+
+Two hours until demo. My desktop is a mess. Windows spawning in random positions. My terminal isn't transparent. My PiP window isn't pinned. Firefox popups aren't floating.
+
+The rational thing would be to boot into a backup session. KDE is right there. GNOME exists. But no - I've been showing off Hyprland to everyone for months. "Look how smooth it is!" "Check out these animations!" "This is the future of Linux desktops!"
+
+I couldn't present on a boring normie DE. My pride wouldn't allow it.
+
+## The Speedrun
+
+What followed was the most stressful hour of config editing I've ever experienced.
+
+First, I pulled up the wiki:
+
+```bash
+$ firefox https://wiki.hyprland.org/Configuring/Window-Rules/
+```
+
+Then I found a lifesaver - someone made an automatic converter:
+
+```bash
+$ firefox https://forum.hypr.land/t/0-53-window-layerrule-converter/1243
+```
+
+Thank you @ItsOhen, you absolute legend. The in-browser converter handled most of my rules automatically.
+
+But of course, some rules needed manual fixing. The converter couldn't handle everything.
+
+## 45 Minutes Left
+
+My fingers are flying. The Hyprland Discord is chaos - turns out I'm not the only one who updated at the worst possible time.
+
+The other breaking change hit me too:
+
+```bash
+# Old config
+misc {
+    new_window_takes_over_fullscreen = 2
+}
+
+# New config
+misc {
+    on_focus_under_fullscreen = 2
+}
+```
+
+`new_window_takes_over_fullscreen` and `master:inherit_fullscreen` got merged into `on_focus_under_fullscreen`. Another thing to fix.
+
+```bash
+$ hyprctl reload
+# No errors
+
+$ hyprctl clients
+# Windows actually following rules again
+```
+
+My PiP is pinned. Terminals are transparent. Pavucontrol floats and centers. We're back.
+
+## 15 Minutes Left
+
+Config is working. Quick test - everything launches correctly. Window rules apply. Animations smooth.
+
+Quick shower. Throw on a shirt that doesn't have coffee stains. Laptop in bag. Sprint to the demo room.
+
+## The Demo
+
+I present. Everything works. The panel clicks, the smooth animations play, my project does its thing. The examiner is impressed.
+
+"Nice desktop environment," he says. "What is that, some kind of custom Linux setup?"
+
+"Hyprland," I say, trying not to think about the heart attack I had an hour ago. "It's a Wayland compositor. Very stable."
+
+I lie with a straight face. It's a survival skill.
+
+## Lessons Learned (That I'll Probably Ignore)
+
+1. **Never update before important events.** Put a reminder in your calendar. Tape a note to your monitor. Tattoo it on your forehead.
+
+2. **Keep a backup DE installed.** KDE takes like 2 seconds to boot into. Your pride is not worth the stress.
+
+3. **Pin critical packages.** You can tell pacman to ignore certain packages during updates:
+   ```bash
+   # /etc/pacman.conf
+   IgnorePkg = hyprland hyprland-git
+   ```
+
+4. **Read the release notes BEFORE updating.** Revolutionary concept, I know. Especially check for "Breaking Changes" sections.
+
+5. **Have a minimal fallback config.** Something that just works, even if it's ugly.
+
+6. **Bookmark the migration tools.** The community usually builds converters for major syntax changes. Use them.
+
+## Current Status
+
+It's now midnight. I've fully migrated my config. The new windowrule syntax is actually cleaner once you get used to it - having the matcher first makes more logical sense.
+
+But I'm not updating again until after graduation. I'm adding Hyprland to my IgnorePkg list. I'll live with the old version. Stability is a feature.
+
+```bash
+$ hyprctl version
+Hyprland 0.53.0
+
+$ cat /etc/pacman.conf | grep Ignore
+IgnorePkg = hyprland
+```
+
+To the Hyprland devs: I love your project. The new windowrule system is cleaner and more powerful. But maybe next time, a deprecation period? A gentle nudge before the rug pull? 
+
+At least you provided a converter tool link in the release notes. That saved my demo.
+
+Now if you'll excuse me, I need to go touch grass and recover from the emotional damage.
+]]></content:encoded>
       <pubDate>Wed, 14 Jan 2026 00:00:00 GMT</pubDate>
       <category>Linux</category>
       <category>Hyprland</category>
@@ -50,6 +304,38 @@ Yes. I updated my system three hours before my final year project ...</descripti
  Why Bun?
 
 Bun was built from scratch with performance in mind. It&apos;s written in Zig and uses JavaScriptCore instead of V8, which gives it a significant...</description>
+      <content:encoded><![CDATA[
+Bun is an all-in-one JavaScript runtime and toolkit designed for speed. It includes a bundler, test runner, and Node.js-compatible package manager.
+
+## Why Bun?
+
+Bun was built from scratch with performance in mind. It's written in Zig and uses JavaScriptCore instead of V8, which gives it a significant speed advantage in many scenarios.
+
+### Key Features
+
+- **Fast startup times** - Bun starts up to 4x faster than Node.js
+- **Native TypeScript support** - No additional configuration needed
+- **Built-in bundler** - Bundle your code without extra tools
+- **npm compatible** - Use your existing packages seamlessly
+
+## Getting Started
+
+Installing Bun is straightforward:
+
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+Once installed, you can run JavaScript and TypeScript files directly:
+
+```bash
+bun run index.ts
+```
+
+## Conclusion
+
+Bun is a promising alternative to Node.js that offers significant performance improvements. Give it a try in your next project!
+]]></content:encoded>
       <pubDate>Sat, 10 Jan 2026 00:00:00 GMT</pubDate>
       <category>JavaScript</category>
       <category>Bun</category>
@@ -68,6 +354,50 @@ Ink is a React renderer for the terminal. It lets you build CLI apps using compo
  Why Use Ink?
 
 - Familiar React co...</description>
+      <content:encoded><![CDATA[
+Command-line interfaces don't have to be boring. With Ink, you can build beautiful, interactive CLIs using React components.
+
+## What is Ink?
+
+Ink is a React renderer for the terminal. It lets you build CLI apps using components, just like you would build a web app.
+
+### Why Use Ink?
+
+- Familiar React component model
+- Built-in hooks for input handling
+- Flexbox layout support
+- TypeScript support out of the box
+
+## Creating Your First Ink App
+
+Start by creating a new project:
+
+```bash
+mkdir my-cli && cd my-cli
+bun init
+bun add ink react
+```
+
+Then create your component:
+
+```typescript
+import { render, Text, Box } from 'ink';
+
+function App() {
+  return (
+    <Box flexDirection="column">
+      <Text color="green">Hello, CLI!</Text>
+    </Box>
+  );
+}
+
+render(<App />);
+```
+
+## Conclusion
+
+Ink makes it easy to create professional CLI tools. The React paradigm translates surprisingly well to terminal interfaces.
+]]></content:encoded>
       <pubDate>Mon, 05 Jan 2026 00:00:00 GMT</pubDate>
       <category>TypeScript</category>
       <category>CLI</category>
@@ -88,6 +418,38 @@ The latest version includes a completely rewritten engine that&apos;s significan
 
 - New engine - Up to 10x faster builds
 - CSS-first co...</description>
+      <content:encoded><![CDATA[
+Tailwind CSS 4.0 brings significant improvements to the utility-first CSS framework we know and love.
+
+## What's New in v4?
+
+The latest version includes a completely rewritten engine that's significantly faster and more capable.
+
+### Key Improvements
+
+- **New engine** - Up to 10x faster builds
+- **CSS-first configuration** - Configure directly in CSS
+- **Automatic content detection** - No more content configuration
+- **Native cascade layers** - Better CSS organization
+
+## Migration Guide
+
+Upgrading is straightforward for most projects:
+
+```bash
+bun add tailwindcss@latest
+```
+
+Update your CSS to use the new import syntax:
+
+```css
+@import "tailwindcss";
+```
+
+## Conclusion
+
+Tailwind CSS 4.0 is a significant step forward. The performance improvements alone make it worth upgrading.
+]]></content:encoded>
       <pubDate>Sun, 28 Dec 2025 00:00:00 GMT</pubDate>
       <category>CSS</category>
       <category>Tailwind</category>
