@@ -9,7 +9,7 @@
 
 Bun was built from scratch with performance in mind. It&apos;s written in Zig and uses JavaScriptCore instead of V8, which gives it a signific...</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 19 Jan 2026 15:33:37 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 24 Jan 2026 16:40:30 GMT</lastBuildDate>
     <atom:link href="https://blog.shivaraj110.com/rss.xml" rel="self" type="application/rss+xml"/>
     <managingEditor> (Shivaraj)</managingEditor>
     <item>

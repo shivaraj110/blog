@@ -5,9 +5,198 @@
     <link>https://blog.shivaraj110.com</link>
     <description>Thoughts on Linux, web development, and tech adventures</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 19 Jan 2026 15:33:37 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 24 Jan 2026 16:40:30 GMT</lastBuildDate>
     <atom:link href="https://blog.shivaraj110.com/rss.xml" rel="self" type="application/rss+xml"/>
     <managingEditor> (Shivaraj)</managingEditor>
+    <item>
+      <title>Why I Switched to the Zen Kernel (And You Might Want To)</title>
+      <link>https://blog.shivaraj110.com/post/switching-to-zen-kernel</link>
+      <guid isPermaLink="true">https://blog.shivaraj110.com/post/switching-to-zen-kernel</guid>
+      <description>After breaking my kernel and spending quality time with the LTS version, I decided to try something different. Enter: the Zen kernel.
+
+ What Even Is the Zen Kernel?
+
+The Zen kernel is a collaborative effort to provide the best Linux kernel possible for everyday systems. It&apos;s not the bleeding-edge ma...</description>
+      <content:encoded><![CDATA[
+After breaking my kernel and spending quality time with the LTS version, I decided to try something different. Enter: the Zen kernel.
+
+## What Even Is the Zen Kernel?
+
+The Zen kernel is a collaborative effort to provide the best Linux kernel possible for everyday systems. It's not the bleeding-edge mainline kernel, and it's definitely not the boring LTS kernel. It's somewhere in between - optimized for desktop performance and responsiveness.
+
+Think of it as the kernel that actually cares about your desktop experience. While the mainline kernel tries to be everything for everyone (servers, embedded systems, your smart fridge), Zen focuses on what matters for daily driving: responsiveness, low latency, and smooth multitasking.
+
+## Why I Made the Switch
+
+After my [kernel-breaking adventure](/post/i-broke-my-kernel), I was running the LTS kernel. It was stable. It was boring. It worked perfectly.
+
+But here's the thing - I was missing out on newer features, better hardware support, and performance improvements. The LTS kernel is great for servers and production systems, but for a desktop? I wanted more.
+
+I didn't want to go back to the mainline kernel either. I'd learned my lesson about living on the edge. I needed something in the middle - newer than LTS, but more stable and optimized than mainline.
+
+That's where Zen comes in.
+
+## The Installation
+
+On Arch (because of course I'm on Arch), it's dead simple:
+
+```bash
+sudo pacman -S linux-zen linux-zen-headers
+```
+
+If you're on the AUR train, there's also `linux-zen-git` for the absolute latest, but I'm trying to be responsible here.
+
+After installation, regenerate your initramfs:
+
+```bash
+sudo mkinitcpio -P
+```
+
+Update your bootloader config:
+
+```bash
+# For GRUB users
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+# For systemd-boot users
+# It should auto-detect, but check /boot/loader/entries/
+```
+
+Reboot, select the Zen kernel from your bootloader menu, and you're in.
+
+```bash
+$ uname -r
+6.18.6-zen1-1-zen
+```
+
+Beautiful.
+
+## What's Different?
+
+### The Scheduler
+
+Zen uses a different CPU scheduler than the mainline kernel. It's tuned for desktop interactivity - your system stays responsive even under heavy load.
+
+I noticed this immediately when compiling code while watching YouTube. On the mainline kernel, video playback would occasionally stutter during heavy compilation. With Zen? Smooth as butter.
+
+### Lower Latency
+
+Zen is configured with a 1000Hz timer frequency (vs 300Hz on mainline). This means the kernel checks for tasks to run more frequently, resulting in lower latency and better responsiveness.
+
+For gaming, this is huge. Frame pacing feels smoother. Input lag is reduced. It's not placebo - the numbers back it up.
+
+### Better I/O Performance
+
+Zen uses the BFQ (Budget Fair Queueing) I/O scheduler by default for HDDs and SSDs. This prioritizes interactive tasks over background operations.
+
+What this means in practice: your system doesn't freeze when you're copying large files or running disk-intensive operations. You can still browse, type, and work while your backup is running.
+
+### Optimized for Modern Hardware
+
+Zen enables optimizations for newer CPUs that might not be enabled in the mainline kernel. If you're running relatively modern hardware (anything from the last 5-6 years), you'll likely see benefits.
+
+## Real-World Performance
+
+I'm not going to throw benchmarks at you. This isn't a scientific comparison. But here's what I've noticed in actual daily use:
+
+**Compilation times:** Slightly faster. Not night-and-day, but noticeable when building large projects.
+
+**System responsiveness:** Significantly better. Opening applications feels snappier. Switching workspaces is smoother.
+
+**Gaming:** Better frame pacing. Less stuttering. Especially noticeable in games that hammer the CPU.
+
+**Battery life:** About the same as mainline. Maybe slightly worse than LTS, but not enough to matter.
+
+**Stability:** Rock solid. I've had zero crashes or kernel panics in the weeks I've been running it.
+
+## The Trade-offs
+
+Nothing is perfect. Here's what you should know:
+
+### Not as Stable as LTS
+
+The Zen kernel tracks relatively recent kernel versions. It's more stable than mainline (thanks to the extra patches and testing), but it's not LTS-level "set it and forget it" stability.
+
+If you're running a production server or a system that absolutely cannot go down, stick with LTS.
+
+### Slightly Higher Resource Usage
+
+The optimizations for responsiveness come at a cost. Zen uses a bit more CPU time and memory than a minimal kernel configuration.
+
+On modern hardware, you won't notice. On a 10-year-old laptop with 2GB of RAM, you might.
+
+### Package Availability
+
+On Arch, Zen is in the official repos. On other distros, you might need to add a PPA or compile from source. Check your distro's documentation.
+
+## Who Should Use Zen?
+
+**You should use Zen if:**
+- You're on a desktop or laptop used for daily work
+- You want better responsiveness and lower latency
+- You game on Linux
+- You run CPU-intensive workloads while multitasking
+- You want newer kernel features without the instability of mainline
+
+**Stick with LTS if:**
+- You run a server or production system
+- You value stability above all else
+- You rarely update your system
+- You're on very old hardware
+
+**Use mainline if:**
+- You need the absolute latest features
+- You're testing new hardware
+- You enjoy living dangerously
+- You have good backups and a recovery plan
+
+## My Current Setup
+
+I'm now running Zen as my default kernel, with LTS as a fallback in GRUB. Best of both worlds - performance when I want it, stability when I need it.
+
+```bash
+$ uname -r
+6.18.6-zen1-1-zen
+
+# Fallback options in GRUB:
+# - linux-zen (current)
+# - linux-lts (stable fallback)
+# - linux (mainline, just in case)
+```
+
+I've also set up automatic GRUB menu timeout, so if Zen ever fails to boot, it'll automatically fall back to LTS after 5 seconds.
+
+```bash
+# /etc/default/grub
+GRUB_TIMEOUT=5
+GRUB_DEFAULT=saved
+GRUB_SAVEDEFAULT=true
+```
+
+## The Verdict
+
+For a desktop Linux system, the Zen kernel is fantastic. It's the sweet spot between stability and performance. You get newer features and better responsiveness without the chaos of tracking mainline.
+
+Is it necessary? No. Will your system explode without it? Also no. But if you care about desktop performance and want your Linux system to feel as snappy as possible, give it a shot.
+
+Worst case, you reboot into your LTS kernel and pretend this never happened. Best case, you wonder why you didn't switch sooner.
+
+## Resources
+
+- [Zen Kernel GitHub](https://github.com/zen-kernel/zen-kernel)
+- [Arch Wiki: Kernel](https://wiki.archlinux.org/title/Kernel)
+- [Liquorix Kernel](https://liquorix.net/) - Another performance-focused kernel worth checking out
+
+Now if you'll excuse me, I have some smooth, responsive computing to enjoy.
+
+Stay Zen, friends.
+]]></content:encoded>
+      <pubDate>Sat, 24 Jan 2026 00:00:00 GMT</pubDate>
+      <category>Linux</category>
+      <category>Kernel</category>
+      <category>Arch</category>
+      <category>Performance</category>
+    </item>
     <item>
       <title>I Broke My Kernel: A Tale of Impatience</title>
       <link>https://blog.shivaraj110.com/post/i-broke-my-kernel</link>

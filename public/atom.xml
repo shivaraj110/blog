@@ -3,11 +3,26 @@
   <title>Shivaraj&apos;s Blog</title>
   <link href="https://blog.shivaraj110.com"/>
   <link href="https://blog.shivaraj110.com/atom.xml" rel="self"/>
-  <updated>2026-01-19T15:33:37.298Z</updated>
+  <updated>2026-01-24T16:40:30.703Z</updated>
   <id>https://blog.shivaraj110.com/</id>
   <author>
     <name>Shivaraj</name>
   </author>
+  <entry>
+    <title>Why I Switched to the Zen Kernel (And You Might Want To)</title>
+    <link href="https://blog.shivaraj110.com/post/switching-to-zen-kernel"/>
+    <id>https://blog.shivaraj110.com/post/switching-to-zen-kernel</id>
+    <updated>2026-01-24T00:00:00.000Z</updated>
+    <summary>After breaking my kernel and spending quality time with the LTS version, I decided to try something different. Enter: the Zen kernel.
+
+ What Even Is the Zen Kernel?
+
+The Zen kernel is a collaborative effort to provide the best Linux kernel possible for everyday systems. It&apos;s not the bleeding-edge ma...</summary>
+    <category term="Linux"/>
+    <category term="Kernel"/>
+    <category term="Arch"/>
+    <category term="Performance"/>
+  </entry>
   <entry>
     <title>I Broke My Kernel: A Tale of Impatience</title>
     <link href="https://blog.shivaraj110.com/post/i-broke-my-kernel"/>
