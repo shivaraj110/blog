@@ -3,11 +3,28 @@
   <title>Shivaraj&apos;s Blog</title>
   <link href="https://blog.shivaraj110.com"/>
   <link href="https://blog.shivaraj110.com/atom.xml" rel="self"/>
-  <updated>2026-01-24T16:40:30.703Z</updated>
+  <updated>2026-02-04T17:18:45.486Z</updated>
   <id>https://blog.shivaraj110.com/</id>
   <author>
     <name>Shivaraj</name>
   </author>
+  <entry>
+    <title>MeNami: Building a Read-Only Web3 Wallet with the Navigator&apos;s Eye</title>
+    <link href="https://blog.shivaraj110.com/post/menami-web3-wallet"/>
+    <id>https://blog.shivaraj110.com/post/menami-web3-wallet</id>
+    <updated>2026-02-04T00:00:00.000Z</updated>
+    <summary>&quot;Money isn&apos;t everything, but everything needs money!&quot; — Nami, One Piece
+
+ The Story Behind MeNami
+
+Picture this: You&apos;re navigating the treacherous waters of Web3, managing multiple wallets across different blockchains, constantly worried about security, and wishing you had a simple way to just watch...</summary>
+    <category term="Web3"/>
+    <category term="Blockchain"/>
+    <category term="React"/>
+    <category term="TypeScript"/>
+    <category term="Solana"/>
+    <category term="Ethereum"/>
+  </entry>
   <entry>
     <title>Why I Switched to the Zen Kernel (And You Might Want To)</title>
     <link href="https://blog.shivaraj110.com/post/switching-to-zen-kernel"/>

@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>MeNami: Building a Read-Only Web3 Wallet with the Navigator&apos;s Eye - Shivaraj&apos;s Blog</title>
+    <link>https://blog.shivaraj110.com</link>
+    <description>&quot;Money isn&apos;t everything, but everything needs money!&quot; — Nami, One Piece
+
+ The Story Behind MeNami
+
+Picture this: You&apos;re navigating the treacherous waters of Web3, managing multiple wallets across different blockchains, constantly worried about security, and wishing you had a simple way to just...</description>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 04 Feb 2026 17:18:45 GMT</lastBuildDate>
+    <atom:link href="https://blog.shivaraj110.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <managingEditor> (Shivaraj)</managingEditor>
+    <item>
+      <title>MeNami: Building a Read-Only Web3 Wallet with the Navigator&apos;s Eye</title>
+      <link>https://blog.shivaraj110.com/post/menami-web3-wallet</link>
+      <guid isPermaLink="true">https://blog.shivaraj110.com/post/menami-web3-wallet</guid>
+      <description>&quot;Money isn&apos;t everything, but everything needs money!&quot; — Nami, One Piece
+
+ The Story Behind MeNami
+
+Picture this: You&apos;re navigating the treacherous waters of Web3, managing multiple wallets across different blockchains, constantly worried about security, and wishing you had a simple way to just watch...</description>
+      <content:encoded><![CDATA[
+*"Money isn't everything, but everything needs money!"* — Nami, One Piece
+
+## The Story Behind MeNami
+
+Picture this: You're navigating the treacherous waters of Web3, managing multiple wallets across different blockchains, constantly worried about security, and wishing you had a simple way to just *watch* your crypto assets without the constant fear of accidentally signing a malicious transaction.
+
+That's where **MeNami** (目ナミ) comes in.
+
+The name combines two powerful concepts:
+- **Me (目)** — "Eye" in Japanese
+- **Nami (ナミ)** — The legendary navigator and treasurer of the Straw Hat Pirates from One Piece
+
+Just like Nami has an unmatched eye for treasure and an obsession with keeping her berries safe, MeNami gives you the navigator's eye over your crypto assets. It's a read-only HD (Hierarchical Deterministic) wallet that supports both Solana and Ethereum blockchains.
+
+## What Makes MeNami Different?
+
+**Read-only** means MeNami is designed purely for viewing and managing keys — it doesn't sign or broadcast transactions. Think of it like Nami carefully counting her treasure without spending unnecessarily. This makes it perfect for:
+
+- 🔍 **Portfolio tracking** across multiple chains
+- 🔐 **Cold wallet monitoring** without exposing private keys to hot environments
+- 📊 **Account management** for developers testing multi-chain applications
+- 🎓 **Learning** about HD wallets and key derivation
+
+## The Tech Crew (Stack)
+
+Building MeNami required assembling the right crew of technologies:
+
+- **Next.js 15** — The ship's hull (app router, React 19)
+- **TypeScript** — Type-safe navigation charts
+- **Tailwind CSS** — The ship's beautiful paint
+- **shadcn/ui** — Pre-built UI components for smooth sailing
+- **ethers.js** — Ethereum blockchain interaction
+- **@solana/web3.js** — Solana blockchain interaction
+- **bip39** — Mnemonic phrase generation and validation
+- **ed25519-hd-key** — Solana key derivation (Ed25519 curve)
+
+## Features That Nami Would Approve
+
+✨ **Multi-Chain Treasure** — Manage Solana and Ethereum from a single mnemonic  
+🔢 **Unlimited Accounts** — Derive as many accounts as Nami has berries (infinite)  
+🔑 **Private Key Import** — Bring your existing treasure keys aboard  
+🌐 **Network Toggle** — Switch between Mainnet and Testnet  
+💰 **Real-Time Balances** — Know your wealth at a glance  
+💾 **Secure Storage** — localStorage persistence (guard it like Nami guards her tangerines)  
+🎨 **Beautiful UI** — Smooth animations, dark mode, fully responsive  
+🔔 **Toast Notifications** — Never miss an important update
+
+## Deep Dive: The Grand Line of Code
+
+Let me take you through the core functionalities that make MeNami work. Each one is as essential as a crew member on the Thousand Sunny.
+
+### 1. Mnemonic Generation — Creating Your Treasure Map
+
+The foundation of any HD wallet is the mnemonic phrase — your 12-word treasure map. Here's how MeNami generates and validates them:
+
+```typescript
+// lib/wallet.ts
+import { generateMnemonic as bip39Generate, validateMnemonic as bip39Validate } from 'bip39';
+
+export const generateMnemonic = (): string => {
+  try {
+    return bip39Generate();
+  } catch (error) {
+    throw new Error(`Failed to generate mnemonic`);
+  }
+};
+
+export const validateMnemonic = (mnemonic: string): boolean => {
+  if (!mnemonic || typeof mnemonic !== 'string') {
+    return false;
+  }
+  return bip39Validate(mnemonic.trim());
+};
+```
+
+**How it works:**
+- `bip39Generate()` creates random 128-bit entropy → 12 words
+- These 12 words ARE your wallet — lose them, lose everything
+- The words come from a standardized list of 2048 words (BIP39 wordlist)
+- Nami would write this down in three different hiding spots 📝
+
+> [!WARNING]
+> Never share your mnemonic phrase with anyone. MeNami stores it in localStorage for convenience, but in production, you'd want more secure storage solutions like encrypted vaults or hardware security modules.
+
+### 2. HD Key Derivation — One Map, Infinite Treasures
+
+From a single mnemonic, we can derive unlimited keypairs using standardized derivation paths. This is the magic of Hierarchical Deterministic wallets.
+
+```typescript
+// Derivation paths follow BIP44 standard
+const DERIVATION_PATHS = {
+  solana: (index: number) => `m/44'/501'/${index}'/0'`,
+  ethereum: (index: number) => `m/44'/60'/0'/0/${index}`,
+};
+
+// Solana uses Ed25519 curve
+export const deriveSolanaKeypair = (mnemonic: string, index: number) => {
+  const seed = mnemonicToSeed(mnemonic);
+  const path = DERIVATION_PATHS.solana(index);
+  const derivedSeed = derivePath(path, seed.toString("hex")).key;
+  const keypair = nacl.sign.keyPair.fromSeed(derivedSeed);
+  
+  return {
+    publicKey: bs58.encode(keypair.publicKey),
+    secretKey: bs58.encode(keypair.secretKey),
+    derivationPath: path,
+  };
+};
+
+// Ethereum uses secp256k1 curve
+export const deriveEthereumWallet = (mnemonic: string, index: number) => {
+  const path = DERIVATION_PATHS.ethereum(index);
+  const hdNode = HDNodeWallet.fromPhrase(mnemonic.trim(), undefined, path);
+  
+  return {
+    publicKey: hdNode.address,
+    privateKey: hdNode.privateKey,
+    derivationPath: path,
+  };
+};
+```
+
+**The Navigator's Secret:**
+- Same mnemonic + same path = same keys (deterministic)
+- Increment the index = new treasure chest
+- One map, unlimited X marks
+- Different blockchains use different cryptographic curves (Ed25519 for Solana, secp256k1 for Ethereum)
+
+> [!NOTE]
+> The derivation path format `m/44'/501'/0'/0'` follows BIP44 standard:
+> - `m` = master key
+> - `44'` = BIP44 purpose
+> - `501'` = Solana coin type (60 for Ethereum)
+> - Next number = account index
+> - Final numbers = change/address index
+
+### 3. Balance Fetching — Counting Your Berries
+
+Real-time treasure counting using public RPC endpoints. This is where we actually connect to the blockchain networks:
+
+```typescript
+// lib/balance.ts
+const RPC_ENDPOINTS = {
+  mainnet: {
+    solana: "https://api.mainnet-beta.solana.com",
+    ethereum: "https://eth.llamarpc.com",
+  },
+  testnet: {
+    solana: "https://api.devnet.solana.com",
+    ethereum: "https://sepolia.gateway.tenderly.co",
+  },
+};
+
+export async function getSolanaBalance(
+  publicKey: string,
+  network: NetworkType,
+) {
+  const connection = getSolanaConnection(network);
+  const lamports = await connection.getBalance(new PublicKey(publicKey));
+  
+  return {
+    balance: lamports / LAMPORTS_PER_SOL,
+    network,
+    blockchain: 'solana' as const,
+  };
+}
+
+export async function getEthereumBalance(
+  address: string,
+  network: NetworkType,
+) {
+  const provider = getEthereumProvider(network);
+  const wei = await provider.getBalance(address);
+  
+  return {
+    balance: parseFloat(formatEther(wei)),
+    network,
+    blockchain: 'ethereum' as const,
+  };
+}
+```
+
+**Nami's Ledger:**
+- Solana balances are in **lamports** (1 SOL = 1 billion lamports)
+- Ethereum balances are in **wei** (1 ETH = 10^18 wei)
+- We use public RPC endpoints (free, but rate-limited)
+- For production, you'd want to use services like Alchemy or QuickNode
+
+### 4. State Management — The Ship's Log
+
+React Context provides global state with localStorage persistence. This is the brain of our application:
+
+```typescript
+// contexts/WalletContext.tsx
+export const WalletProvider = ({ children }) => {
+  const [mnemonic, setMnemonic] = useState<string | null>(null);
+  const [accounts, setAccounts] = useState<WalletAccount[]>([]);
+  const [network, setNetworkState] = useState<NetworkType>("testnet");
+
+  // Load from localStorage on mount (recovering the ship's log)
+  useEffect(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const state = JSON.parse(stored);
+      setMnemonic(state.mnemonic);
+      setAccounts(state.accounts);
+    }
+  }, []);
+
+  // Save to localStorage on changes (writing to the log)
+  useEffect(() => {
+    if (mnemonic) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        mnemonic,
+        accounts
+      }));
+    }
+  }, [mnemonic, accounts]);
+
+  // ... rest of the context
+};
+```
+
+This pattern ensures that:
+- Your wallet persists across page refreshes
+- State is shared across all components
+- Changes are automatically saved
+
+## The Architecture — Project Map
+
+```
+MeNami/
+├── app/
+│   ├── globals.css          # Tailwind + theme
+│   ├── layout.tsx           # Root layout
+│   └── page.tsx             # Main entry point
+├── components/
+│   ├── icons/
+│   │   └── BlockchainLogos.tsx  # Blockchain flags
+│   ├── ui/                  # shadcn/ui components
+│   ├── OnboardingFlow.tsx   # Create/import wallet
+│   └── WalletDashboard.tsx  # Main dashboard
+├── contexts/
+│   └── WalletContext.tsx    # Global state management
+├── lib/
+│   ├── balance.ts           # Balance fetching logic
+│   ├── wallet.ts            # Key generation/derivation
+│   └── utils.ts             # Utility functions
+├── public/
+│   └── nami.png             # Our beloved navigator
+└── package.json             # Dependencies
+```
+
+## Challenges I Faced (And How I Solved Them)
+
+### Challenge 1: Different Cryptographic Curves
+
+Solana uses Ed25519 while Ethereum uses secp256k1. This meant I couldn't use a single key derivation function for both chains.
+
+**Solution:** Separate derivation functions with blockchain-specific libraries (`ed25519-hd-key` for Solana, `ethers.js` HDNodeWallet for Ethereum).
+
+### Challenge 2: RPC Rate Limiting
+
+Free RPC endpoints have strict rate limits. During testing, I kept hitting these limits.
+
+**Solution:** Implemented request caching and debouncing. Also added error handling to gracefully fallback when rate limited.
+
+### Challenge 3: Private Key Security
+
+Storing private keys in localStorage is convenient but not secure for production use.
+
+**Solution:** For this read-only wallet, it's acceptable since users can use testnet. But I added clear warnings and plan to implement encrypted storage in v2.
+
+## What I Learned
+
+Building MeNami taught me:
+
+1. **Blockchain fundamentals** — Understanding how HD wallets work at a deep level
+2. **Cryptography** — Different curves, key derivation paths, and why they matter
+3. **Multi-chain development** — Each blockchain has its own quirks and best practices
+4. **State management** — Complex state with persistence requirements
+5. **Security considerations** — What's acceptable for a demo vs production
+
+## Try It Yourself
+
+Want to join the crew? Here's how to get started:
+
+```bash
+# Clone the ship
+git clone https://github.com/shivaraj110/readonly_wallet
+cd readonly_wallet
+
+# Gather the crew (install dependencies)
+npm install
+
+# Set sail
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) and begin your adventure!
+
+> [!IMPORTANT]
+> MeNami is a learning project and demo application. For production use with real funds, consider:
+> - Hardware wallet integration
+> - Encrypted key storage
+> - Professional security audits
+> - Multi-signature support
+> - Transaction signing capabilities
+
+## What's Next?
+
+I'm planning several features for MeNami v2:
+
+- 🔐 **Hardware wallet support** (Ledger, Trezor)
+- 📱 **Mobile responsive improvements**
+- 🎨 **Custom token support** (ERC-20, SPL tokens)
+- 📊 **Transaction history**
+- 💱 **Multi-currency price display**
+- 🔒 **Encrypted storage** with password protection
+- 🌈 **NFT gallery view**
+
+## Final Thoughts
+
+Building MeNami was like navigating the Grand Line — challenging, educational, and incredibly rewarding. It's a project born from curiosity about how Web3 wallets work under the hood.
+
+Just like Nami keeps her eye on every berry, MeNami keeps watch over your crypto assets with the same dedication. It's not just a wallet viewer — it's a learning tool, a portfolio tracker, and a testament to the power of open-source development.
+
+If you're interested in Web3 development, blockchain technology, or just want to understand how your crypto wallet works, I encourage you to dive into the code. Fork it, break it, improve it. That's how we all learn.
+
+*"I'll draw a map of the entire world, but first... let me check my wallet balance."* 🗺️💰
+
+---
+
+**Links:**
+- [GitHub Repository](https://github.com/shivaraj110/readonly_wallet)
+- [Live Demo](https://menami.vercel.app) *(coming soon)*
+
+**Tech Stack:**
+Next.js • TypeScript • Tailwind CSS • Solana • Ethereum • Web3
+
+---
+
+*Have questions or suggestions? Feel free to open an issue on GitHub or reach out to me. Happy navigating! ⛵*
+]]></content:encoded>
+      <pubDate>Wed, 04 Feb 2026 00:00:00 GMT</pubDate>
+      <category>Web3</category>
+      <category>Blockchain</category>
+      <category>React</category>
+      <category>TypeScript</category>
+      <category>Solana</category>
+      <category>Ethereum</category>
+    </item>
+  </channel>
+</rss>
