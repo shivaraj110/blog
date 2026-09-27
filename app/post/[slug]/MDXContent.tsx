@@ -21,9 +21,9 @@ export function MDXContent({ content }: MDXContentProps) {
   if (!mdxSource) {
     return (
       <div className="animate-pulse space-y-4">
-        <div className="h-4 bg-zinc-800 rounded w-3/4"></div>
-        <div className="h-4 bg-zinc-800 rounded w-full"></div>
-        <div className="h-4 bg-zinc-800 rounded w-5/6"></div>
+        <div className="h-4 bg-card w-3/4"></div>
+        <div className="h-4 bg-card w-full"></div>
+        <div className="h-4 bg-card w-5/6"></div>
       </div>
     );
   }

@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
+import { Fragment_Mono } from "next/font/google";
 import "./globals.css";
 import { Footer } from "@/components/Footer";
+
+const fragmentMono = Fragment_Mono({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-fragment-mono",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://blog.shivaraj110.com"),
@@ -20,7 +27,7 @@ export const metadata: Metadata = {
     description: "Thoughts, tutorials, and stories about Linux, development, and tech adventures.",
     images: [
       {
-        url: "https://1d6kykqofq.ufs.sh/f/fVvo0hHNtQOLVR03to18aupHxIdmj9WvyiofM5sPS1gAGDBJ",
+        url: "https://blog.shivaraj110.com/og.jpg",
         width: 1200,
         height: 630,
         alt: "Shivaraj's Blog",
@@ -32,7 +39,7 @@ export const metadata: Metadata = {
     title: "Blog | Shivaraj",
     description: "Thoughts, tutorials, and stories about Linux, development, and tech adventures.",
     creator: "@shivaraj_does",
-    images: ["https://1d6kykqofq.ufs.sh/f/fVvo0hHNtQOLVR03to18aupHxIdmj9WvyiofM5sPS1gAGDBJ"],
+    images: ["https://blog.shivaraj110.com/og.jpg"],
   },
   robots: {
     index: true,
@@ -52,15 +59,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={fragmentMono.variable}>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="preconnect" href="https://api.fontshare.com" />
+        <link
+          rel="stylesheet"
+          href="https://api.fontshare.com/v2/css?f[]=gambarino@400&display=swap"
+        />
+        <meta name="theme-color" content="#050505" />
       </head>
-      <body className="min-h-screen bg-zinc-950 text-zinc-100 font-sans antialiased">
-        <main className="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <body className="min-h-screen">
+        <div className="px-5 pt-5 sm:px-10">
           {children}
           <Footer />
-        </main>
+        </div>
       </body>
     </html>
   );

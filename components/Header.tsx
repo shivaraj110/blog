@@ -1,96 +1,59 @@
 "use client";
 
-import { motion, AnimatePresence } from "motion/react";
-import { useState, useEffect } from "react";
+import { motion } from "motion/react";
+import Link from "next/link";
+import { FitText } from "./FitText";
+import { Clock } from "./Clock";
+import { ScrollChrome } from "./ScrollChrome";
+import { SITE_NAME, nav } from "@/lib/site";
 
 interface HeaderProps {
-  title?: string;
   subtitle?: string;
 }
 
 export function Header({
-  title = "Blog",
-  subtitle = "Thoughts, tutorials, and stories",
+  subtitle = "Thoughts, tutorials, and stories about Linux, development, and tech adventures.",
 }: HeaderProps) {
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
     <>
-      {/* Sticky navbar header - appears on scroll */}
-      <AnimatePresence>
-        {isScrolled && (
-          <motion.div
-            initial={{ y: -100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -100, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed top-0 left-0 right-0 z-40 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800/50"
-          >
-            <div className="max-w-2xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-              <div>
-                <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <ScrollChrome threshold={400} />
 
-      {/* Back to top button */}
-      <AnimatePresence>
-        {isScrolled && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.2 }}
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="fixed bottom-8 right-8 p-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 rounded-full shadow-lg transition-colors duration-200 z-50"
-            aria-label="Back to top"
-          >
-            <svg
-              width="20"
-              height="20"
-              style={{ width: "20px", height: "20px" }}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              className="text-zinc-300"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 10l7-7m0 0l7 7m-7-7v18"
-              />
-            </svg>
-          </motion.button>
-        )}
-      </AnimatePresence>
-
-      {/* Original header */}
-      <motion.header
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="mb-12 sm:mb-16"
-      >
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight mb-2 sm:mb-3">
-          {title}
+      <header>
+        <h1 className="m-0">
+          <FitText
+            text={SITE_NAME}
+            className="w-full font-display text-brand leading-none tracking-[-0.04em]"
+          />
         </h1>
 
-        <p className="text-sm sm:text-base text-zinc-500 leading-relaxed max-w-lg">
-          {subtitle}
-        </p>
-      </motion.header>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+          className="mt-10 flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between sm:gap-20"
+        >
+          <div className="flex flex-col gap-10">
+            <p className="m-0 max-w-[400px]">{subtitle}</p>
+            <Clock />
+          </div>
+          <nav className="flex gap-6 sm:flex-col sm:items-end sm:gap-4">
+            {nav.map((n) =>
+              n.external ? (
+                <a key={n.href} href={n.href} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                  {n.label}
+                </a>
+              ) : (
+                <Link key={n.href} href={n.href} className="hover:text-white transition-colors">
+                  {n.label}
+                </Link>
+              )
+            )}
+            <a href="/rss.xml" className="hover:text-white transition-colors">
+              RSS
+            </a>
+          </nav>
+        </motion.div>
+      </header>
     </>
   );
 }

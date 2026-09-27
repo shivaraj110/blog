@@ -41,7 +41,7 @@ const CopyButton = ({ code }: { code: string }) => {
   return (
     <button
       onClick={copy}
-      className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors duration-200 px-2 py-1 rounded hover:bg-zinc-700/50"
+      className="flex items-center gap-1.5 text-xs text-grey hover:text-white transition-colors duration-200 cursor-pointer"
     >
       {copied ? (
         <>
@@ -54,11 +54,11 @@ const CopyButton = ({ code }: { code: string }) => {
             strokeWidth={2}
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="text-green-400"
+            className="text-brand"
           >
             <polyline points="20 6 9 17 4 12" />
           </svg>
-          <span className="text-green-400">Copied!</span>
+          <span className="text-brand">Copied!</span>
         </>
       ) : (
         <>
@@ -110,21 +110,19 @@ function CodeBlock({ language, code }: CodeBlockProps) {
   }, [code, language]);
 
   return (
-    <div className="code-block my-6 bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2 bg-zinc-800/50 border-b border-zinc-800">
-        <span className="text-xs font-medium text-zinc-500 uppercase tracking-wide">
-          {language}
-        </span>
+    <div className="code-block">
+      <div className="flex items-center justify-between px-5 py-2.5 border-b border-line">
+        <span className="text-[10px] uppercase">{language}</span>
         <CopyButton code={code} />
       </div>
       <pre className="overflow-x-auto">
         {highlighted ? (
           <code
-            className="hljs block p-4 text-sm font-mono leading-relaxed"
+            className="hljs"
             dangerouslySetInnerHTML={{ __html: highlighted }}
           />
         ) : (
-          <code className="block p-4 text-sm font-mono text-zinc-200 leading-relaxed">
+          <code>
             {code}
           </code>
         )}
@@ -134,46 +132,7 @@ function CodeBlock({ language, code }: CodeBlockProps) {
 }
 
 export const mdxComponents: MDXComponents = {
-  h2: (props) => (
-    <h2
-      className="text-2xl font-semibold text-zinc-100 mt-10 mb-4 tracking-tight"
-      {...props}
-    />
-  ),
-  h3: (props) => (
-    <h3
-      className="text-xl font-semibold text-zinc-100 mt-8 mb-3 tracking-tight"
-      {...props}
-    />
-  ),
-  p: (props) => (
-    <p className="text-zinc-400 leading-relaxed mb-5" {...props} />
-  ),
-  a: (props) => (
-    <a
-      className="text-indigo-400 hover:text-indigo-300 underline underline-offset-2 transition-colors"
-      {...props}
-    />
-  ),
-  strong: (props) => (
-    <strong className="text-zinc-100 font-semibold" {...props} />
-  ),
-  ul: (props) => (
-    <ul className="text-zinc-400 mb-5 pl-6 list-disc space-y-2" {...props} />
-  ),
-  ol: (props) => (
-    <ol
-      className="text-zinc-400 mb-5 pl-6 list-decimal space-y-2"
-      {...props}
-    />
-  ),
-  li: (props) => <li className="leading-relaxed" {...props} />,
-  blockquote: (props) => (
-    <blockquote
-      className="border-l-2 border-zinc-700 pl-4 my-6 text-zinc-400 italic"
-      {...props}
-    />
-  ),
+  // Typography is styled by .blog-content in globals.css
   // Handle the pre element - this wraps fenced code blocks
   pre: (props) => {
     const { children } = props;
@@ -204,13 +163,6 @@ export const mdxComponents: MDXComponents = {
       );
     }
     // Inline code
-    return (
-      <code
-        className="bg-zinc-800 text-zinc-200 px-1.5 py-0.5 rounded text-sm font-mono"
-        {...props}
-      >
-        {children}
-      </code>
-    );
+    return <code {...props}>{children}</code>;
   },
 };

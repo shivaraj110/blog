@@ -11,39 +11,28 @@ interface TagFilterProps {
 export function TagFilter({ tags, selectedTag, onTagSelect }: TagFilterProps) {
   if (tags.length === 0) return null;
 
+  const option = (label: string, value: string | null) => (
+    <button
+      key={label}
+      onClick={() => onTagSelect(value)}
+      className={`transition-colors duration-200 cursor-pointer ${
+        selectedTag === value ? "text-brand" : "text-grey hover:text-white"
+      }`}
+    >
+      {label}
+    </button>
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.05, ease: "easeOut" }}
-      className="mb-6 sm:mb-8"
+      className="mb-10 flex flex-wrap items-baseline gap-x-5 gap-y-2 text-sm"
     >
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs text-zinc-500 mr-1">Filter:</span>
-        <button
-          onClick={() => onTagSelect(null)}
-          className={`px-2.5 py-1 text-xs rounded-md transition-all duration-200 ${
-            selectedTag === null
-              ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40"
-              : "text-zinc-400 bg-zinc-800/50 border border-zinc-700/30 hover:border-zinc-600/50 hover:text-zinc-300"
-          }`}
-        >
-          All
-        </button>
-        {tags.map((tag) => (
-          <button
-            key={tag}
-            onClick={() => onTagSelect(tag)}
-            className={`px-2.5 py-1 text-xs rounded-md transition-all duration-200 ${
-              selectedTag === tag
-                ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40"
-                : "text-zinc-400 bg-zinc-800/50 border border-zinc-700/30 hover:border-zinc-600/50 hover:text-zinc-300"
-            }`}
-          >
-            {tag}
-          </button>
-        ))}
-      </div>
+      <span className="text-[10px] uppercase mr-1">Filter</span>
+      {option("All", null)}
+      {tags.map((tag) => option(tag, tag))}
     </motion.div>
   );
 }

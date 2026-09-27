@@ -6,7 +6,7 @@ import { PostHeader } from "@/components/PostHeader";
 import { MDXContent } from "./MDXContent";
 
 const SITE_URL = "https://blog.shivaraj110.com";
-const OG_IMAGE = "https://1d6kykqofq.ufs.sh/f/fVvo0hHNtQOLVR03to18aupHxIdmj9WvyiofM5sPS1gAGDBJ";
+const OG_IMAGE = "https://blog.shivaraj110.com/og.jpg";
 
 interface PostPageProps {
   params: Promise<{
@@ -203,7 +203,7 @@ export default async function PostPage({ params }: PostPageProps) {
           readTime={post.readTime}
           tags={post.tags}
         />
-        <div className="blog-content" itemProp="articleBody">
+        <div className="blog-content mx-auto max-w-[680px]" itemProp="articleBody">
           <MDXContent content={post.content} />
         </div>
       </article>
